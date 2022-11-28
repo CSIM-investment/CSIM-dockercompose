@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    container_name: csim-postgresql
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      # Volume de la base de données
+      - ./db-data:/var/lib/pgsql-v1
+    environment:
+      - POSTGRES_DB=csim
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
+      - PGDATA=/var/lib/pgsql-v1
+    networks:
+      - vpcbr
+
+  web:
+    container_name: csim-backend
+    ports:
+      # local:container
+      - "8080:80"
+    environment: 
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+      - DATABASE_URL=postgres://username:pgpassword@db:5432/mydatabase
+    env_file:
+      - csim-back.env
+    volumes:
+      # Volume stockant les fichiers web du projet
+      - ./:/var/www/html
+    build:
+      context: ./CSIM-Back/
+      dockerfile: Dockerfile
+    image: csim-backend
+    depends_on:
+      - db
+    links:
+      # Lien vers le conteneur "db" (déclaré ci-après)
+      - db:db
+    networks:
+      - vpcbr
+
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.2.0/24
+         gateway: 192.168.2.1
