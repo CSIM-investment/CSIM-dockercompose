@@ -1,0 +1,5 @@
+.pass
+CSIM-Back/
+CSIM-Front/
+*.env
+db-data/

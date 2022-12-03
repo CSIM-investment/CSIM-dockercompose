@@ -9,7 +9,7 @@ services:
       - "5432:5432"
     volumes:
       # Volume de la base de données
-      - ./db-data:/var/lib/pgsql-v1
+      - ./csim-db-db:/var/lib/pgsql-v1
     environment:
       - POSTGRES_DB=csim
       - POSTGRES_USER=postgres
@@ -23,7 +23,7 @@ services:
     container_name: csim-frontend
     ports:
       # local:container
-      - "8080:8080"
+      - "80:8080"
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/csim-frontend
     volumes:
