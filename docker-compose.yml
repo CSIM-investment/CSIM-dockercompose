@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+  webserver:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+
   db:
     image: postgres
     container_name: csim-postgresql
@@ -9,7 +19,7 @@ services:
       - "5432:5432"
     volumes:
       # Volume de la base de données
-      - ./csim-db-db:/var/lib/pgsql-v1
+      - ./csim-db-pg:/var/lib/pgsql-v1
     environment:
       - POSTGRES_DB=csim
       - POSTGRES_USER=postgres
@@ -23,9 +33,11 @@ services:
     container_name: csim-frontend
     ports:
       # local:container
-      - "80:8080"
+      - "8080:8080"
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/csim-frontend
+    env_file:
+      - csim-front.env
     volumes:
       # Volume stockant les fichiers web du projet
       - ./:/var/www/html/csim-frontend
@@ -35,6 +47,7 @@ services:
     image: csim-frontend
     depends_on:
       - api
+      - webserver
     links:
       # Lien vers le conteneur "api" (déclaré ci-après)
       - api:api
