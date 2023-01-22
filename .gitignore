@@ -3,3 +3,13 @@ CSIM-Back/
 CSIM-Front/
 *.env
 db-data/
+
+# nginx
+nginx/
+
+# sql
+sql
+
+# db-data
+db-data/
+csim-db-pg/
