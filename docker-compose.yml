@@ -5,11 +5,13 @@ services:
     image: nginx:latest
     ports:
       - 80:80
-      - 443:443
     restart: always
     volumes:
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www:/var/www/certbot/:ro
+    networks:
+      vpcbr:
+        ipv4_address: 192.168.2.254
 
   db:
     image: postgres
@@ -27,7 +29,8 @@ services:
       - POSTGRES_HOST=db
       - PGDATA=/var/lib/pgsql-v1
     networks:
-      - vpcbr
+      vpcbr:
+        ipv4_address: 192.168.2.2
 
   web:
     container_name: csim-frontend
@@ -52,7 +55,8 @@ services:
       # Lien vers le conteneur "api" (déclaré ci-après)
       - api:api
     networks:
-      - vpcbr
+      vpcbr:
+        ipv4_address: 192.168.2.3
 
   api:
     container_name: csim-backend
@@ -77,7 +81,8 @@ services:
       # Lien vers le conteneur "db" (déclaré ci-après)
       - db:db
     networks:
-      - vpcbr
+      vpcbr:
+        ipv4_address: 192.168.2.4
 
 networks:
   vpcbr:
