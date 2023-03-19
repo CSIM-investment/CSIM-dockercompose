@@ -12,4 +12,4 @@ sql
 
 # db-data
 db-data/
-csim-db-pg/
+csim-db-pg/logs
